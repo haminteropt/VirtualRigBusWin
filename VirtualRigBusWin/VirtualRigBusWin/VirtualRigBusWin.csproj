@@ -48,5 +48,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KenwoodEmulator\KenwoodEmulator.csproj">
+      <Project>{5017906a-89ee-4d06-b439-e694b68c8ef6}</Project>
+      <Name>KenwoodEmulator</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

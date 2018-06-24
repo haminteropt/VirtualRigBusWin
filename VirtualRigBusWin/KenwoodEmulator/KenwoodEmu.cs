@@ -11,11 +11,9 @@ namespace KenwoodEmulator
     public class KenwoodEmu
     {
         SerialPort _serialPort;
+        bool _continue;
         public void OpenPort(string portName)
         {
-            bool _continue;
-            string name;
-            string message;
             StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
             Thread readThread = new Thread(Read);
 
@@ -23,12 +21,13 @@ namespace KenwoodEmulator
             _serialPort = new SerialPort();
 
             // Allow the user to set the appropriate properties.
-            _serialPort.PortName = SetPortName(_serialPort.PortName);
-            _serialPort.BaudRate = SetPortBaudRate(_serialPort.BaudRate);
-            _serialPort.Parity = SetPortParity(_serialPort.Parity);
-            _serialPort.DataBits = SetPortDataBits(_serialPort.DataBits);
-            _serialPort.StopBits = SetPortStopBits(_serialPort.StopBits);
-            _serialPort.Handshake = SetPortHandshake(_serialPort.Handshake);
+            _serialPort.PortName = "com20";
+            _serialPort.BaudRate = 57600;
+            _serialPort.Parity = Parity.None;
+            _serialPort.DataBits = 8;
+            _serialPort.StopBits = StopBits.One;
+            _serialPort.Handshake = Handshake.None;
+
 
             // Set the read/write timeouts
             _serialPort.ReadTimeout = 500;
@@ -38,44 +37,63 @@ namespace KenwoodEmulator
             _continue = true;
             readThread.Start();
 
-            Console.Write("Name: ");
-            name = Console.ReadLine();
-
-            Console.WriteLine("Type QUIT to exit");
-
             while (_continue)
             {
-                message = Console.ReadLine();
-
-                if (stringComparer.Equals("quit", message))
-                {
-                    _continue = false;
-                }
-                else
-                {
-                    _serialPort.WriteLine(
-                        String.Format("<{0}>: {1}", name, message));
-                }
+                Thread.Sleep(10);
             }
 
             readThread.Join();
             _serialPort.Close();
 
         }
+        public void command(string cmd)
+        {
+            switch (cmd)
+            {
+                case "FA;":
+                    Console.WriteLine("command: {0}", cmd);
+                    _serialPort.Write("FA00007000000;");
+                    break;
+                case "MD;":
+                    Console.WriteLine("command: {0}", cmd);
+                    _serialPort.Write("MD5;");
+                    break;
+                case "?;":
+                    Console.WriteLine("Error: {0}", cmd);
+                    break;
+            }
+        }
         public void Read()
         {
+            StringBuilder sb = new StringBuilder();
             while (_continue)
             {
                 try
                 {
-                    string message = _serialPort.ReadLine();
-                    Console.WriteLine(message);
+                    //string message = _serialPort.ReadLine();
+                    int c = _serialPort.ReadChar();
+                    if (c < 0)
+                    {
+                        Console.WriteLine("Serial port read error");
+                        return;
+                    }
+                    char ch = Convert.ToChar(c);
+                    if (ch == ';')
+                    {
+                        sb.Append(ch);
+                        command(sb.ToString());
+                        sb.Clear();
+                    }
+                    else
+                    {
+                        sb.Append(ch);
+                    }
                 }
                 catch (TimeoutException) { }
             }
         }
         // Display Port values and prompt user to enter a port.
-        public string SetPortName(string defaultPortName)
+        public string SelectPortName(string defaultPortName)
         {
             string portName;
 
@@ -94,100 +112,6 @@ namespace KenwoodEmulator
             }
             return portName;
         }
-        // Display BaudRate values and prompt user to enter a value.
-        public int SetPortBaudRate(int defaultPortBaudRate)
-        {
-            string baudRate;
 
-            Console.Write("Baud Rate(default:{0}): ", defaultPortBaudRate);
-            baudRate = Console.ReadLine();
-
-            if (baudRate == "")
-            {
-                baudRate = defaultPortBaudRate.ToString();
-            }
-
-            return int.Parse(baudRate);
-        }
-
-        // Display PortParity values and prompt user to enter a value.
-        public Parity SetPortParity(Parity defaultPortParity)
-        {
-            string parity;
-
-            Console.WriteLine("Available Parity options:");
-            foreach (string s in Enum.GetNames(typeof(Parity)))
-            {
-                Console.WriteLine("   {0}", s);
-            }
-
-            Console.Write("Enter Parity value (Default: {0}):", defaultPortParity.ToString(), true);
-            parity = Console.ReadLine();
-
-            if (parity == "")
-            {
-                parity = defaultPortParity.ToString();
-            }
-
-            return (Parity)Enum.Parse(typeof(Parity), parity, true);
-        }
-        // Display DataBits values and prompt user to enter a value.
-        public int SetPortDataBits(int defaultPortDataBits)
-        {
-            string dataBits;
-
-            Console.Write("Enter DataBits value (Default: {0}): ", defaultPortDataBits);
-            dataBits = Console.ReadLine();
-
-            if (dataBits == "")
-            {
-                dataBits = defaultPortDataBits.ToString();
-            }
-
-            return int.Parse(dataBits.ToUpperInvariant());
-        }
-
-        // Display StopBits values and prompt user to enter a value.
-        public StopBits SetPortStopBits(StopBits defaultPortStopBits)
-        {
-            string stopBits;
-
-            Console.WriteLine("Available StopBits options:");
-            foreach (string s in Enum.GetNames(typeof(StopBits)))
-            {
-                Console.WriteLine("   {0}", s);
-            }
-
-            Console.Write("Enter StopBits value (None is not supported and \n" +
-             "raises an ArgumentOutOfRangeException. \n (Default: {0}):", defaultPortStopBits.ToString());
-            stopBits = Console.ReadLine();
-
-            if (stopBits == "")
-            {
-                stopBits = defaultPortStopBits.ToString();
-            }
-
-            return (StopBits)Enum.Parse(typeof(StopBits), stopBits, true);
-        }
-        public Handshake SetPortHandshake(Handshake defaultPortHandshake)
-        {
-            string handshake;
-
-            Console.WriteLine("Available Handshake options:");
-            foreach (string s in Enum.GetNames(typeof(Handshake)))
-            {
-                Console.WriteLine("   {0}", s);
-            }
-
-            Console.Write("Enter Handshake value (Default: {0}):", defaultPortHandshake.ToString());
-            handshake = Console.ReadLine();
-
-            if (handshake == "")
-            {
-                handshake = defaultPortHandshake.ToString();
-            }
-
-            return (Handshake)Enum.Parse(typeof(Handshake), handshake, true);
-        }
     }
 }
