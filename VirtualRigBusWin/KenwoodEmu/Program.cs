@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace VirtualRigBusWin
+namespace KenwoodEmu
 {
     class Program
     {

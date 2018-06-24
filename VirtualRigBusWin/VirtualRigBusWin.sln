@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRigBusWin", "VirtualRigBusWin\VirtualRigBusWin.csproj", "{44E9D6B9-0796-4654-9DEB-C5D2320DE4DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenwoodEmulator", "KenwoodEmulator\KenwoodEmulator.csproj", "{5017906A-89EE-4D06-B439-E694B68C8EF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{44E9D6B9-0796-4654-9DEB-C5D2320DE4DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44E9D6B9-0796-4654-9DEB-C5D2320DE4DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44E9D6B9-0796-4654-9DEB-C5D2320DE4DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5017906A-89EE-4D06-B439-E694B68C8EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5017906A-89EE-4D06-B439-E694B68C8EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5017906A-89EE-4D06-B439-E694B68C8EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5017906A-89EE-4D06-B439-E694B68C8EF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
