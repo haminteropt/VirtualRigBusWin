@@ -21,13 +21,15 @@ namespace KenwoodEmulator
             FSK = 6,
             CWR = 7,
             Tune = 8,
-            FSR = 9
+            FSR = 9,
+            ERROR = 10
         }
 
         private RigOperatingState state = new RigOperatingState();
         bool _continue;
         public void OpenPort(string portName)
         {
+
             StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
             Thread readThread = new Thread(Read);
 
@@ -69,8 +71,7 @@ namespace KenwoodEmulator
                     FreqCommand(cmd);
                     break;
                 case "MD":
-                    Console.WriteLine("command: {0}", cmd);
-                    _serialPort.Write("MD5;");
+                    ModeCommand(cmd);
                     break;
                 case "?;":
                     Console.WriteLine("Error: {0}", cmd);
@@ -82,9 +83,16 @@ namespace KenwoodEmulator
             if (cmd.Length == 3)
             {
                 Console.WriteLine("command: {0}", cmd);
-                _serialPort.Write("MD2;");
+
+                int mode = Convert.ToInt32(ModeStdToKenwoodEnum());
+                var modeFmt = string.Format("MD{0};", mode.ToString());
+                _serialPort.Write(modeFmt);
                 return;
             }
+            var semiLoc = cmd.IndexOf(';');
+            var modeEnumStr = cmd.Substring(2, semiLoc - 2);
+            var modeInt = Convert.ToInt32(modeEnumStr);
+            state.Mode = ((Mode)modeInt).ToString();
         }
         private void FreqCommand(string cmd)
         {
@@ -150,6 +158,40 @@ namespace KenwoodEmulator
                 portName = defaultPortName;
             }
             return portName;
+        }
+        private Mode ModeStdToKenwoodEnum()
+        {
+            switch (state.Mode.ToUpper())
+            {
+                case "USB":
+                    return Mode.USB;
+                case "LSB":
+                    return Mode.LSB;
+                case "CW":
+                    return Mode.CW;
+                case "CWL":
+                    return Mode.CW;
+                case "CWU":
+                    return Mode.CW;
+                case "AM":
+                    return Mode.AM;
+                case "FM":
+                    return Mode.FM;
+                case "FSK":
+                    return Mode.FSK;
+                case "DIGH":
+                    return Mode.FSK;
+                case "DIGL":
+                    return Mode.FSR;
+                case "CWR":
+                    return Mode.CWR;
+                case "FSR":
+                    return Mode.FSR;
+                case "TUNE":
+                    return Mode.Tune;
+            }
+            return Mode.ERROR;
+
         }
 
     }
