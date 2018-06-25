@@ -1,7 +1,7 @@
-﻿using System;
+﻿using HamBusLib;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +10,21 @@ namespace KenwoodEmulator
 {
     public class KenwoodEmu
     {
-        SerialPort _serialPort;
+        private SerialPort _serialPort;
+        public enum Mode
+        {
+            LSB = 1,
+            USB = 2,
+            CW = 3,
+            FM = 4,
+            AM = 5,
+            FSK = 6,
+            CWR = 7,
+            Tune = 8,
+            FSR = 9
+        }
+
+        private RigOperatingState state = new RigOperatingState();
         bool _continue;
         public void OpenPort(string portName)
         {
@@ -30,7 +44,7 @@ namespace KenwoodEmulator
 
 
             // Set the read/write timeouts
-            _serialPort.ReadTimeout = 500;
+            _serialPort.ReadTimeout = 5000;
             _serialPort.WriteTimeout = 500;
 
             _serialPort.Open();
@@ -48,13 +62,13 @@ namespace KenwoodEmulator
         }
         public void command(string cmd)
         {
-            switch (cmd)
+            string subcmd = cmd.Substring(0, 2);
+            switch (subcmd)
             {
-                case "FA;":
-                    Console.WriteLine("command: {0}", cmd);
-                    _serialPort.Write("FA00007000000;");
+                case "FA":
+                    FreqCommand(cmd);
                     break;
-                case "MD;":
+                case "MD":
                     Console.WriteLine("command: {0}", cmd);
                     _serialPort.Write("MD5;");
                     break;
@@ -62,6 +76,30 @@ namespace KenwoodEmulator
                     Console.WriteLine("Error: {0}", cmd);
                     break;
             }
+        }
+        private void ModeCommand(string cmd)
+        {
+            if (cmd.Length == 3)
+            {
+                Console.WriteLine("command: {0}", cmd);
+                _serialPort.Write("MD2;");
+                return;
+            }
+        }
+        private void FreqCommand(string cmd)
+        {
+            if (cmd.Length == 3)
+            {
+                Console.WriteLine("command: {0}", cmd);
+                _serialPort.Write(state.Freq.ToString("D11"));
+                return;
+            }
+
+            var semiLoc = cmd.IndexOf(';');
+            var freqStr = cmd.Substring(2, semiLoc - 2);
+            var freqInt = Convert.ToInt64(freqStr);
+            state.Freq = freqInt;
+            Console.WriteLine("freq: {0}", freqInt);
         }
         public void Read()
         {
@@ -82,6 +120,7 @@ namespace KenwoodEmulator
                     {
                         sb.Append(ch);
                         command(sb.ToString());
+                        Console.WriteLine("cmd: {0}", sb);
                         sb.Clear();
                     }
                     else

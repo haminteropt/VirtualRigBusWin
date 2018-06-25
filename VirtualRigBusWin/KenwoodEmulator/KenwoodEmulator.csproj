@@ -43,5 +43,11 @@
     <Compile Include="KenwoodEmu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\hambuslib\HamBusLib\HamBusLib.csproj">
+      <Project>{71e7cf72-8f19-4f6d-a07c-1c78336a861a}</Project>
+      <Name>HamBusLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
