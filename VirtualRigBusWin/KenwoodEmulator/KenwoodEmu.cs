@@ -1,4 +1,5 @@
 ﻿using HamBusLib;
+using HamBusLib.UdpNetwork;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -11,6 +12,8 @@ namespace KenwoodEmulator
     public class KenwoodEmu
     {
         private SerialPort _serialPort;
+        NetworkThreadRunner networkThreadRunner = NetworkThreadRunner.GetInstance();
+
         public enum Mode
         {
             LSB = 1,
@@ -27,6 +30,11 @@ namespace KenwoodEmulator
 
         private RigOperatingState state = new RigOperatingState();
         bool _continue;
+        public KenwoodEmu()
+        {
+            state.Type = "RigOperatingState";
+            state.Id = Guid.NewGuid().ToString();
+        }
         public void OpenPort(string portName)
         {
 
@@ -73,10 +81,28 @@ namespace KenwoodEmulator
                 case "MD":
                     ModeCommand(cmd);
                     break;
+                case "TX":
+                    TXRXCommand(cmd);
+                    break;
+                case "RX":
+                    TXRXCommand(cmd);
+                    break;
                 case "?;":
                     Console.WriteLine("Error: {0}", cmd);
                     break;
             }
+        }
+        private void TXRXCommand(string cmd)
+        {
+            if (cmd == "TX;")
+            {
+                state.Tx = true;
+            }
+            else
+            {
+                state.Tx = false;
+            }
+            networkThreadRunner.SendBroadcast(state, 7300);
         }
         private void ModeCommand(string cmd)
         {
@@ -93,6 +119,7 @@ namespace KenwoodEmulator
             var modeEnumStr = cmd.Substring(2, semiLoc - 2);
             var modeInt = Convert.ToInt32(modeEnumStr);
             state.Mode = ((Mode)modeInt).ToString();
+            networkThreadRunner.SendBroadcast(state, 7300);
         }
         private void FreqCommand(string cmd)
         {
@@ -107,6 +134,7 @@ namespace KenwoodEmulator
             var freqStr = cmd.Substring(2, semiLoc - 2);
             var freqInt = Convert.ToInt64(freqStr);
             state.Freq = freqInt;
+            networkThreadRunner.SendBroadcast(state, 7300);
             Console.WriteLine("freq: {0}", freqInt);
         }
         public void Read()
