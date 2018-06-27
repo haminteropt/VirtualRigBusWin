@@ -1,4 +1,5 @@
 ﻿using HamBusLib;
+using HamBusLib.UdpNetwork;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,22 @@ using System.Threading.Tasks;
 
 namespace VirtualRigBusWin
 {
-    public class NetworkThread
+    public class ReportingThread
     {
         private UdpClient udpClient = new UdpClient();
-        private static NetworkThread Instance = null;
+        private static ReportingThread Instance = null;
         private Thread infoThread;
         public VirtualRigInfo rigBusDesc = VirtualRigInfo.Instance;
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        public static NetworkThread GetInstance()
+        public static ReportingThread GetInstance()
         {
             if (Instance == null)
-                Instance = new NetworkThread();
+                Instance = new ReportingThread();
 
             return Instance;
         }
-        private NetworkThread() { }
+        private ReportingThread() { }
 
         public void StartInfoThread()
         {
@@ -35,12 +37,12 @@ namespace VirtualRigBusWin
             // Get the IP  
             string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 
-            var netThread = NetworkThread.GetInstance();
+            var netThread = NetworkThreadRunner.GetInstance();
             rigBusDesc = VirtualRigInfo.Instance;
             rigBusDesc.Command = "update";
-            rigBusDesc.Id = Guid.NewGuid().ToString();
-            rigBusDesc.UdpPort = netThread.rigBusDesc.UdpPort;
-            rigBusDesc.TcpPort = netThread.rigBusDesc.TcpPort;
+            rigBusDesc.Id = Id;
+            rigBusDesc.UdpPort = netThread.listenUdpPort;
+            rigBusDesc.TcpPort = netThread.listenTcpPort;
             rigBusDesc.MinVersion = 1;
             rigBusDesc.MaxVersion = 1;
             rigBusDesc.host = hostName;

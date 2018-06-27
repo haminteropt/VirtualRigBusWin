@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
+
 using System.Threading.Tasks;
 
 namespace KenwoodEmulator
@@ -13,7 +14,17 @@ namespace KenwoodEmulator
     {
         private SerialPort _serialPort;
         NetworkThreadRunner networkThreadRunner = NetworkThreadRunner.GetInstance();
-
+        public string Id
+        {
+            get
+            {
+                return state.Id;
+            }
+            set
+            {
+                state.Id = value;
+            }
+        }
         public enum Mode
         {
             LSB = 1,
@@ -33,7 +44,6 @@ namespace KenwoodEmulator
         public KenwoodEmu()
         {
             state.Type = "RigOperatingState";
-            state.Id = Guid.NewGuid().ToString();
         }
         public void OpenPort(string portName)
         {

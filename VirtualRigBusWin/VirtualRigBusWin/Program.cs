@@ -13,10 +13,11 @@ namespace VirtualRigBusWin
     {
         static void Main(string[] args)
         {
-            NetworkThreadRunner.GetInstance();
-            var netThread = NetworkThread.GetInstance();
-            netThread.StartInfoThread();
+            var netrunning = NetworkThreadRunner.GetInstance();
+            var reportingThread = ReportingThread.GetInstance();
+            reportingThread.StartInfoThread();
             var kenwood = new KenwoodEmu();
+            kenwood.Id = reportingThread.Id;
             kenwood.OpenPort("com20");
             Console.ReadKey();
         }
