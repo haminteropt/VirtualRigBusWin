@@ -40,6 +40,11 @@ namespace KenwoodEmulator
         }
 
         private RigOperatingState state = new RigOperatingState();
+        private void sendSerial(string str)
+        {
+            Console.WriteLine("serial: {0}", str);
+            _serialPort.Write(str);
+        }
         bool _continue;
         public KenwoodEmu()
         {
@@ -85,7 +90,16 @@ namespace KenwoodEmulator
             string subcmd = cmd.Substring(0, 2);
             switch (subcmd)
             {
+                case "AI":
+                    AICommand(cmd);
+                    break;
                 case "FA":
+                    FreqCommand(cmd);
+                    break;
+                case "FB":
+                    FreqCommand(cmd);
+                    break;
+                case "FR":
                     FreqCommand(cmd);
                     break;
                 case "MD":
@@ -94,14 +108,55 @@ namespace KenwoodEmulator
                 case "TX":
                     TXRXCommand(cmd);
                     break;
+                case "IF":
+                    IFCommand(cmd);
+                    break;
                 case "RX":
                     TXRXCommand(cmd);
                     break;
                 case "?;":
                     Console.WriteLine("Error: {0}", cmd);
                     break;
+                default:
+                    Console.WriteLine("Unknown: {0}", cmd);
+                    break;
             }
         }
+
+        private void AICommand(string cmd)
+        {
+            if (cmd.Length == 3)
+            {
+
+                sendSerial("AI0;");
+
+            }
+        }
+
+        private void IFCommand(string cmd)
+        {
+            string sendStr;
+            string extStr;
+            if (cmd.Length != 3)
+                return;
+            int iTx = 0;
+            if (state.Tx)
+                iTx = 1;
+            extStr = string.Format("{0}000000 ",
+                Convert.ToInt32(ModeStdToKenwoodEnum()));  // p15 6
+            sendStr = string.Format("IF{0}{1}{2}{3}{4}{5}{6}{7}{8};",
+                state.Freq.ToString("D11"), //p1
+                "TS480",//p2
+                "+0000",// p3
+                "0", // p4
+                "0", // p5
+                "0", // p6
+                "00", // p7
+                iTx.ToString(), //p8
+                extStr); // p9
+            sendSerial(sendStr);
+        }
+
         private void TXRXCommand(string cmd)
         {
             if (cmd == "TX;")
@@ -118,11 +173,11 @@ namespace KenwoodEmulator
         {
             if (cmd.Length == 3)
             {
-                Console.WriteLine("command: {0}", cmd);
 
                 int mode = Convert.ToInt32(ModeStdToKenwoodEnum());
                 var modeFmt = string.Format("MD{0};", mode.ToString());
-                _serialPort.Write(modeFmt);
+                sendSerial(modeFmt);
+
                 return;
             }
             var semiLoc = cmd.IndexOf(';');
@@ -135,8 +190,10 @@ namespace KenwoodEmulator
         {
             if (cmd.Length == 3)
             {
-                Console.WriteLine("command: {0}", cmd);
-                _serialPort.Write(state.Freq.ToString("D11"));
+                if (cmd[1].ToString().ToLower() == "a")
+                    sendSerial("FA" + state.Freq.ToString("D11") + ";");
+                else
+                    sendSerial("FB" + state.Freq.ToString("D11") + ";");
                 return;
             }
 
@@ -146,6 +203,21 @@ namespace KenwoodEmulator
             state.Freq = freqInt;
             networkThreadRunner.SendBroadcast(state, 7300);
             Console.WriteLine("freq: {0}", freqInt);
+        }
+        private void VFOCommand(string cmd)
+        {
+            if (cmd.Length == 3)
+            {
+                sendSerial("FR0;");
+                return;
+            }
+
+            //var semiLoc = cmd.IndexOf(';');
+            //var freqStr = cmd.Substring(2, semiLoc - 2);
+            //var freqInt = Convert.ToInt64(freqStr);
+            //state.Freq = freqInt;
+            //networkThreadRunner.SendBroadcast(state, 7300);
+            //Console.WriteLine("freq: {0}", freqInt);
         }
         public void Read()
         {
@@ -166,7 +238,6 @@ namespace KenwoodEmulator
                     {
                         sb.Append(ch);
                         command(sb.ToString());
-                        Console.WriteLine("cmd: {0}", sb);
                         sb.Clear();
                     }
                     else
