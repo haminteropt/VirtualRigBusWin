@@ -191,9 +191,9 @@ namespace KenwoodEmulator
             if (cmd.Length == 3)
             {
                 if (cmd[1].ToString().ToLower() == "a")
-                    sendSerial("FA" + state.Freq.ToString("D11") + ";");
+                    sendSerial("FA" + state.FreqA.ToString("D11") + ";");
                 else
-                    sendSerial("FB" + state.Freq.ToString("D11") + ";");
+                    sendSerial("FB" + state.FreqB.ToString("D11") + ";");
                 return;
             }
 
