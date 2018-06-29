@@ -39,8 +39,8 @@ namespace KenwoodEmulator
             ERROR = 10
         }
 
-        private RigOperatingState state = new RigOperatingState();
-        private void sendSerial(string str)
+        private RigOperatingState state = RigOperatingState.Instance;
+        private void SendSerial(string str)
         {
             Console.WriteLine("serial: {0}", str);
             _serialPort.Write(str);
@@ -128,7 +128,7 @@ namespace KenwoodEmulator
             if (cmd.Length == 3)
             {
 
-                sendSerial("AI0;");
+                SendSerial("AI0;");
 
             }
         }
@@ -154,7 +154,7 @@ namespace KenwoodEmulator
                 "00", // p7
                 iTx.ToString(), //p8
                 extStr); // p9
-            sendSerial(sendStr);
+            SendSerial(sendStr);
         }
 
         private void TXRXCommand(string cmd)
@@ -176,7 +176,7 @@ namespace KenwoodEmulator
 
                 int mode = Convert.ToInt32(ModeStdToKenwoodEnum());
                 var modeFmt = string.Format("MD{0};", mode.ToString());
-                sendSerial(modeFmt);
+                SendSerial(modeFmt);
 
                 return;
             }
@@ -191,9 +191,9 @@ namespace KenwoodEmulator
             if (cmd.Length == 3)
             {
                 if (cmd[1].ToString().ToLower() == "a")
-                    sendSerial("FA" + state.FreqA.ToString("D11") + ";");
+                    SendSerial("FA" + state.FreqA.ToString("D11") + ";");
                 else
-                    sendSerial("FB" + state.FreqB.ToString("D11") + ";");
+                    SendSerial("FB" + state.FreqB.ToString("D11") + ";");
                 return;
             }
 
@@ -208,7 +208,7 @@ namespace KenwoodEmulator
         {
             if (cmd.Length == 3)
             {
-                sendSerial("FR0;");
+                SendSerial("FR0;");
                 return;
             }
 

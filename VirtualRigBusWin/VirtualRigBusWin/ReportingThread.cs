@@ -35,7 +35,7 @@ namespace VirtualRigBusWin
             string hostName = Dns.GetHostName(); // Retrive the Name of HOST  
             Console.WriteLine(hostName);
             // Get the IP  
-            string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
+            string myIP = Dns.GetHostEntry(hostName).AddressList[0].ToString();
 
             var netThread = NetworkThreadRunner.GetInstance();
             rigBusDesc = VirtualRigInfo.Instance;
@@ -45,8 +45,8 @@ namespace VirtualRigBusWin
             rigBusDesc.TcpPort = netThread.listenTcpPort;
             rigBusDesc.MinVersion = 1;
             rigBusDesc.MaxVersion = 1;
-            rigBusDesc.host = hostName;
-            rigBusDesc.ip = myIP;
+            rigBusDesc.Host = hostName;
+            rigBusDesc.Ip = myIP;
             rigBusDesc.SendSyncInfo = true;
             rigBusDesc.RigType = "Virtual";
             rigBusDesc.Name = "VirtualRig";
