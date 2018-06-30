@@ -42,7 +42,6 @@ namespace KenwoodEmulator
         private RigOperatingState state = RigOperatingState.Instance;
         private void SendSerial(string str)
         {
-            Console.WriteLine("serial: {0}", str);
             _serialPort.Write(str);
         }
         bool _continue;
@@ -54,7 +53,7 @@ namespace KenwoodEmulator
         {
 
             StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
-            Thread readThread = new Thread(Read);
+            Thread readThread = new Thread(ReadSerialPort);
 
             // Create a new SerialPort object with default settings.
             _serialPort = new SerialPort();
@@ -127,9 +126,7 @@ namespace KenwoodEmulator
         {
             if (cmd.Length == 3)
             {
-
                 SendSerial("AI0;");
-
             }
         }
 
@@ -154,6 +151,8 @@ namespace KenwoodEmulator
                 "00", // p7
                 iTx.ToString(), //p8
                 extStr); // p9
+
+            Console.WriteLine("IF: {0}", sendStr);
             SendSerial(sendStr);
         }
 
@@ -202,7 +201,6 @@ namespace KenwoodEmulator
             var freqInt = Convert.ToInt64(freqStr);
             state.Freq = freqInt;
             networkThreadRunner.SendBroadcast(state, 7300);
-            Console.WriteLine("freq: {0}", freqInt);
         }
         private void VFOCommand(string cmd)
         {
@@ -219,7 +217,7 @@ namespace KenwoodEmulator
             //networkThreadRunner.SendBroadcast(state, 7300);
             //Console.WriteLine("freq: {0}", freqInt);
         }
-        public void Read()
+        public void ReadSerialPort()
         {
             StringBuilder sb = new StringBuilder();
             while (_continue)
@@ -248,26 +246,7 @@ namespace KenwoodEmulator
                 catch (TimeoutException) { }
             }
         }
-        // Display Port values and prompt user to enter a port.
-        public string SelectPortName(string defaultPortName)
-        {
-            string portName;
 
-            Console.WriteLine("Available Ports:");
-            foreach (string s in SerialPort.GetPortNames())
-            {
-                Console.WriteLine("   {0}", s);
-            }
-
-            Console.Write("Enter COM port value (Default: {0}): ", defaultPortName);
-            portName = Console.ReadLine();
-
-            if (portName == "" || !(portName.ToLower()).StartsWith("com"))
-            {
-                portName = defaultPortName;
-            }
-            return portName;
-        }
         private Mode ModeStdToKenwoodEnum()
         {
             switch (state.Mode.ToUpper())
@@ -300,8 +279,6 @@ namespace KenwoodEmulator
                     return Mode.Tune;
             }
             return Mode.ERROR;
-
         }
-
     }
 }

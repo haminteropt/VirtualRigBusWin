@@ -20,6 +20,7 @@ namespace VirtualRigBusWin
         public VirtualRigInfo rigBusDesc = VirtualRigInfo.Instance;
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
+
         public static ReportingThread GetInstance()
         {
             if (Instance == null)
@@ -27,15 +28,18 @@ namespace VirtualRigBusWin
 
             return Instance;
         }
-        private ReportingThread() { }
+        private ReportingThread()
+        {
+
+        }
 
         public void StartInfoThread()
         {
 
             string hostName = Dns.GetHostName(); // Retrive the Name of HOST  
-            Console.WriteLine(hostName);
             // Get the IP  
             string myIP = Dns.GetHostEntry(hostName).AddressList[0].ToString();
+            //string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 
             var netThread = NetworkThreadRunner.GetInstance();
             rigBusDesc = VirtualRigInfo.Instance;
@@ -61,7 +65,6 @@ namespace VirtualRigBusWin
                 rigBusDesc.CurrentTime = DateTime.Now;
                 udpClient.Connect("255.255.255.255", Constants.DirPortUdp);
                 Byte[] senddata = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(rigBusDesc));
-                Console.WriteLine("sending data: {0}", rigBusDesc.CurrentTime);
                 udpClient.Send(senddata, senddata.Length);
                 Thread.Sleep(3000);
             }
