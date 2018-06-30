@@ -62,7 +62,7 @@ namespace VirtualRigBusWin
         {
             while (true)
             {
-                rigBusDesc.CurrentTime = DateTime.Now;
+                rigBusDesc.Time = DateTimeUtils.ConvertToUnixTime(DateTime.Now);
                 udpClient.Connect("255.255.255.255", Constants.DirPortUdp);
                 Byte[] senddata = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(rigBusDesc));
                 udpClient.Send(senddata, senddata.Length);

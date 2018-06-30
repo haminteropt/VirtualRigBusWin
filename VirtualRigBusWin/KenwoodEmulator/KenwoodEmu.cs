@@ -89,6 +89,9 @@ namespace KenwoodEmulator
             string subcmd = cmd.Substring(0, 2);
             switch (subcmd)
             {
+                case "ID":
+                    IDCommand(cmd);
+                    break;
                 case "AI":
                     AICommand(cmd);
                     break;
@@ -100,6 +103,9 @@ namespace KenwoodEmulator
                     break;
                 case "FR":
                     FreqCommand(cmd);
+                    break;
+                case "FT":
+                    FTCommand(cmd);
                     break;
                 case "MD":
                     ModeCommand(cmd);
@@ -113,12 +119,54 @@ namespace KenwoodEmulator
                 case "RX":
                     TXRXCommand(cmd);
                     break;
+                case "KS":
+                    KSCommand(cmd);
+                    break;
+                case "SM":
+                    SMCommand(cmd);
+                    break;
+                case "EX":
+                    EXCommand(cmd);
+                    break;
                 case "?;":
                     Console.WriteLine("Error: {0}", cmd);
                     break;
                 default:
                     Console.WriteLine("Unknown: {0}", cmd);
                     break;
+            }
+        }
+
+        private void SMCommand(string cmd)
+        {
+            SendSerial("SM00000;");
+        }
+        private void EXCommand(string cmd)
+        {
+            SendSerial("?;");
+        }
+
+        private void KSCommand(string cmd)
+        {
+            if (cmd.Length == 3)
+            {
+                SendSerial("KS010;");
+            }
+        }
+
+        private void FTCommand(string cmd)
+        {
+            if (cmd.Length == 3)
+            {
+                SendSerial("FT0;");
+            }
+        }
+
+        private void IDCommand(string cmd)
+        {
+            if (cmd.Length == 3)
+            {
+                SendSerial("ID020;");
             }
         }
 
