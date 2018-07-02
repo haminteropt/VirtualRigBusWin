@@ -13,7 +13,7 @@ namespace KenwoodEmulator
     public class KenwoodEmu
     {
         private SerialPort _serialPort;
-        NetworkThreadRunner networkThreadRunner = NetworkThreadRunner.GetInstance();
+        UdpServer udpServer = UdpServer.GetInstance();
         public string Id
         {
             get
@@ -214,7 +214,7 @@ namespace KenwoodEmulator
             {
                 state.Tx = false;
             }
-            networkThreadRunner.SendBroadcast(state, 7300);
+            udpServer.SendBroadcast(state, 7300);
         }
         private void ModeCommand(string cmd)
         {
@@ -231,7 +231,7 @@ namespace KenwoodEmulator
             var modeEnumStr = cmd.Substring(2, semiLoc - 2);
             var modeInt = Convert.ToInt32(modeEnumStr);
             state.Mode = ((Mode)modeInt).ToString();
-            networkThreadRunner.SendBroadcast(state, 7300);
+            udpServer.SendBroadcast(state, 7300);
         }
         private void FreqCommand(string cmd)
         {
@@ -248,7 +248,7 @@ namespace KenwoodEmulator
             var freqStr = cmd.Substring(2, semiLoc - 2);
             var freqInt = Convert.ToInt64(freqStr);
             state.Freq = freqInt;
-            networkThreadRunner.SendBroadcast(state, 7300);
+            udpServer.SendBroadcast(state, 7300);
         }
         private void VFOCommand(string cmd)
         {

@@ -13,7 +13,7 @@ namespace VirtualRigBusWin
     {
         static void Main(string[] args)
         {
-            var netrunning = NetworkThreadRunner.GetInstance();
+            var udpServer = UdpServer.GetInstance();
             var reportingThread = ReportingThread.GetInstance();
             reportingThread.StartInfoThread();
             var kenwood = new KenwoodEmu();

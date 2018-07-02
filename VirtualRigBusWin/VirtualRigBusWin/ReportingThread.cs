@@ -41,12 +41,12 @@ namespace VirtualRigBusWin
             string myIP = Dns.GetHostEntry(hostName).AddressList[0].ToString();
             //string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 
-            var netThread = NetworkThreadRunner.GetInstance();
+            var udpServer = UdpServer.GetInstance();
             rigBusDesc = VirtualRigInfo.Instance;
             rigBusDesc.Command = "update";
             rigBusDesc.Id = Id;
-            rigBusDesc.UdpPort = netThread.listenUdpPort;
-            rigBusDesc.TcpPort = netThread.listenTcpPort;
+            rigBusDesc.UdpPort = udpServer.listenUdpPort;
+            rigBusDesc.TcpPort = udpServer.listenTcpPort;
             rigBusDesc.MinVersion = 1;
             rigBusDesc.MaxVersion = 1;
             rigBusDesc.Host = hostName;
