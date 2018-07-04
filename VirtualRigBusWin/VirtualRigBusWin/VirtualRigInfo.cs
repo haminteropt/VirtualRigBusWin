@@ -9,6 +9,8 @@ namespace VirtualRigBusWin
 {
     public class VirtualRigInfo : RigBusInfo
     {
+
+
         private static VirtualRigInfo instance = null;
         public static VirtualRigInfo Instance
         {

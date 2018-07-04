@@ -37,9 +37,7 @@ namespace VirtualRigBusWin
         {
 
             string hostName = Dns.GetHostName(); // Retrive the Name of HOST  
-            // Get the IP  
             string myIP = Dns.GetHostEntry(hostName).AddressList[0].ToString();
-            //string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 
             var udpServer = UdpServer.GetInstance();
             rigBusDesc = VirtualRigInfo.Instance;
@@ -54,7 +52,8 @@ namespace VirtualRigBusWin
             rigBusDesc.SendSyncInfo = true;
             rigBusDesc.RigType = "Virtual";
             rigBusDesc.Name = "VirtualRig";
-            rigBusDesc.Type = "RigBusDesc";
+            rigBusDesc.DocType = "RigBus";
+
             infoThread = new Thread(SendRigBusInfo);
             infoThread.Start();
         }
