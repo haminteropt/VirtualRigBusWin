@@ -47,7 +47,7 @@ namespace KenwoodEmulator
         bool _continue;
         public KenwoodEmu()
         {
-            state.Type = "RigOperatingState";
+            state.DocType = "RigOperatingState";
         }
         public void OpenPort(string portName)
         {
