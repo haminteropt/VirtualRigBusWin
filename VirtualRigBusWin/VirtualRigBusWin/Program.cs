@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HamBusLib;
 using HamBusLib.UdpNetwork;
 using KenwoodEmulator;
-
+using Microsoft.Owin.Hosting;
 
 namespace VirtualRigBusWin
 {
     class Program
     {
+        static private IDisposable app;
         static void Main(string[] args)
         {
+
+            int httpPort = IpPorts.TcpPort;
+            var url = string.Format("http://localhost:{0}/", httpPort);
+            app = WebApp.Start(url);
+
             var comPort = "com20";
             var udpServer = UdpServer.GetInstance();
             var reportingThread = ReportingThread.GetInstance();
@@ -22,6 +25,9 @@ namespace VirtualRigBusWin
             kenwood.Id = reportingThread.Id;
             
             kenwood.OpenPort(comPort);
+
+            var kenwood2 = new KenwoodEmu();
+
             Console.ReadKey();
         }
     }

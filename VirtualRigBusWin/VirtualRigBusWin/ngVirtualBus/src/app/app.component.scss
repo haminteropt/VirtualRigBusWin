@@ -1,0 +1,30 @@
+.heading {
+    grid-area: header;
+    justify-content: center;
+    color: white;
+    background-color: darkblue;
+}
+.sidebar {
+    grid-area: sidebar
+}
+.footer {
+    grid-area: footer
+}
+.right {
+    grid-area: right;
+    font-size: 12px
+}
+.content {
+    grid-area: content;
+}
+.wrapper {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 2fr 7fr 2fr;
+    grid-template-areas: "header header  header" 
+                          "sidebar content  right"
+                          "footer footer footer";
+    background-color: #fff;
+    color: #444;
+    margin: 5px;
+}

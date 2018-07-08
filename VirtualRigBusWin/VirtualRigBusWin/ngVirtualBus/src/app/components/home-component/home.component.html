@@ -1,0 +1,15 @@
+<div class="wrapper header">
+  <div class="box ">Name</div>
+  <div class="box ">Description </div>
+  <div class="box ">Type </div>
+  <div class="box ">Port</div>
+</div>
+
+<div *ngFor="let packet of serviceList">
+  <div class="wrapper content">
+    <div class="box"><a href="http://{{packet.host}}:{{packet.tcpPort}}" target="_blank">{{packet.name}}</a> </div>
+    <div class="box"> {{packet.description}} </div>
+    <div class="box"> {{packet.docType}} </div>
+    <div class="box"> {{packet.comPort}}</div>
+  </div>
+</div>

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngCouchBus": {
+    "ngDirectoryBus": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ngCouchBus",
+            "outputPath": "dist/ngDirectoryBus",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -54,18 +54,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ngCouchBus:build"
+            "browserTarget": "ngDirectoryBus:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ngCouchBus:build:production"
+              "browserTarget": "ngDirectoryBus:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngCouchBus:build"
+            "browserTarget": "ngDirectoryBus:build"
           }
         },
         "test": {
@@ -99,7 +99,7 @@
         }
       }
     },
-    "ngCouchBus-e2e": {
+    "ngDirectoryBus-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -107,11 +107,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ngCouchBus:serve"
+            "devServerTarget": "ngDirectoryBus:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ngCouchBus:serve:production"
+              "devServerTarget": "ngDirectoryBus:serve:production"
             }
           }
         },
@@ -127,5 +127,5 @@
       }
     }
   },
-  "defaultProject": "ngCouchBus"
+  "defaultProject": "ngDirectoryBus"
 }
