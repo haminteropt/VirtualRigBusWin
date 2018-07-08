@@ -48,6 +48,7 @@ namespace VirtualRigBusWin
             rigBusDesc.MinVersion = 1;
             rigBusDesc.MaxVersion = 1;
             rigBusDesc.Host = hostName;
+            rigBusDesc.Description = "Kenwood Virtual RigBus";
             rigBusDesc.Ip = myIP;
             rigBusDesc.SendSyncInfo = true;
             rigBusDesc.RigType = "Virtual";

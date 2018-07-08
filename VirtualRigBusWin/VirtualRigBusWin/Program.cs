@@ -13,12 +13,15 @@ namespace VirtualRigBusWin
     {
         static void Main(string[] args)
         {
+            var comPort = "com20";
             var udpServer = UdpServer.GetInstance();
             var reportingThread = ReportingThread.GetInstance();
+            reportingThread.rigBusDesc.ComPort = comPort;
             reportingThread.StartInfoThread();
             var kenwood = new KenwoodEmu();
             kenwood.Id = reportingThread.Id;
-            kenwood.OpenPort("com20");
+            
+            kenwood.OpenPort(comPort);
             Console.ReadKey();
         }
     }
