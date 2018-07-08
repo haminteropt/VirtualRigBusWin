@@ -1,19 +1,22 @@
-using HamBusLib;
-using HamBusLib.UdpNetwork;
-using KenwoodEmulator;
-using Microsoft.Owin.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VirtualKenwoodBusWin
 {
-    class Program
+    using HamBusLib;
+    using HamBusLib.UdpNetwork;
+    using KenwoodEmulator;
+    using Microsoft.Owin.Hosting;
+    using System;
+    using System.Net.Http;
+
+    /// <summary>
+    /// Defines the <see cref="Program" />
+    /// </summary>
+    public class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// The Main
+        /// </summary>
+        /// <param name="args">The args<see cref="string[]"/></param>
+        public static void Main(string[] args)
         {
 
             int httpPort = IpPorts.TcpPort;
@@ -27,20 +30,19 @@ namespace VirtualKenwoodBusWin
             var kenwood = new KenwoodEmu();
             kenwood.Id = reportingThread.Id;
 
-            kenwood.OpenPort(comPort);
+            //kenwood.OpenPort(comPort);
 
             var kenwood2 = new KenwoodEmu();
-            using (WebApp.Start<Startup>(url: url))
-            {
-                HttpClient client = new HttpClient();
+            WebApp.Start<Startup>(url: url);
 
-                var response = client.GetAsync(url + "api/values").Result;
+            HttpClient client = new HttpClient();
 
-                Console.WriteLine(response);
-                Console.WriteLine(response.Content.ReadAsStringAsync().Result);
-                // Create HttpCient and make a request to api/values 
-                Console.ReadLine();
-            }
+            var response = client.GetAsync(url + "api/values").Result;
+
+            Console.WriteLine(response);
+            Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+            // Create HttpCient and make a request to api/values 
+            Console.ReadLine();
         }
     }
 }
