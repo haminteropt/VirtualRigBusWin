@@ -30,7 +30,7 @@ namespace VirtualKenwoodBusWin
             var kenwood = new KenwoodEmu();
             kenwood.Id = reportingThread.Id;
 
-            //kenwood.OpenPort(comPort);
+            kenwood.OpenPort(comPort);
 
             var kenwood2 = new KenwoodEmu();
             WebApp.Start<Startup>(url: url);
