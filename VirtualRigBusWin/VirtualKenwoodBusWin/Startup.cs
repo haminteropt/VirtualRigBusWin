@@ -1,11 +1,6 @@
 ﻿using Microsoft.Owin.Cors;
 using Owin;
 using Swashbuckle.Application;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace VirtualKenwoodBusWin
@@ -16,8 +11,8 @@ namespace VirtualKenwoodBusWin
         {
             app.UseCors(CorsOptions.AllowAll);
             HttpConfiguration config = new HttpConfiguration();
-            config.EnableSwagger(c => c.SingleApiVersion("v1", "OmniRigBus Control OmniRig via RigBus")).
-EnableSwaggerUi();
+            config.EnableSwagger(c => c.SingleApiVersion("v1", "Virtual Kenwood Rig via RigBus")).
+                EnableSwaggerUi();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
@@ -26,6 +21,5 @@ EnableSwaggerUi();
 
             app.UseWebApi(config);
         }
-
     }
 }
