@@ -19,8 +19,8 @@ namespace VirtualKenwoodBusWin
         public static void Main(string[] args)
         {
 
-            int httpPort = IpPorts.TcpPort;
-            var url = string.Format("http://localhost:{0}/", httpPort);
+            int httpPort = IpPorts.TcpPort+1;
+            var url = string.Format("http://*:{0}", httpPort);
 
             var comPort = "com20";
             var udpServer = UdpServer.GetInstance();
@@ -35,12 +35,6 @@ namespace VirtualKenwoodBusWin
             var kenwood2 = new KenwoodEmu();
             WebApp.Start<Startup>(url: url);
 
-            HttpClient client = new HttpClient();
-
-            var response = client.GetAsync(url + "api/values").Result;
-
-            Console.WriteLine(response);
-            Console.WriteLine(response.Content.ReadAsStringAsync().Result);
             // Create HttpCient and make a request to api/values 
             Console.ReadLine();
         }
