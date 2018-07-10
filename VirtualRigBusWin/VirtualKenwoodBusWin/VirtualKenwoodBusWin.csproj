@@ -88,7 +88,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\SerialController.cs" />
     <Compile Include="Controller\ValueController.cs" />
+    <Compile Include="PortConfig.cs" />
     <Compile Include="ReportingThread.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Program.cs" />

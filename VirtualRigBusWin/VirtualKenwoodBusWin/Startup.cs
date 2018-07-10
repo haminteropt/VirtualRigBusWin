@@ -13,11 +13,7 @@ namespace VirtualKenwoodBusWin
             HttpConfiguration config = new HttpConfiguration();
             config.EnableSwagger(c => c.SingleApiVersion("v1", "Virtual Kenwood Rig via RigBus")).
                 EnableSwaggerUi();
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            config.MapHttpAttributeRoutes();
 
             app.UseWebApi(config);
         }

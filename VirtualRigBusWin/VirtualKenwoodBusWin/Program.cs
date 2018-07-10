@@ -19,8 +19,8 @@ namespace VirtualKenwoodBusWin
         public static void Main(string[] args)
         {
 
-            int httpPort = IpPorts.TcpPort+1;
-            var url = string.Format("http://*:{0}", httpPort);
+            int httpPort = IpPorts.TcpPort;
+            var url = string.Format("http://localhost:{0}", httpPort);
 
             var comPort = "com20";
             var udpServer = UdpServer.GetInstance();
@@ -38,5 +38,6 @@ namespace VirtualKenwoodBusWin
             // Create HttpCient and make a request to api/values 
             Console.ReadLine();
         }
+
     }
 }
