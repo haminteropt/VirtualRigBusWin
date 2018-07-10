@@ -1,19 +1,18 @@
-﻿using HamBusLib;
-using HamBusLib.UdpNetwork;
-using System;
-using System.Collections.Generic;
-using System.IO.Ports;
-using System.Text;
-using System.Threading;
-
-using System.Threading.Tasks;
-
-namespace KenwoodEmulator
+﻿namespace KenwoodEmulator
 {
+    using HamBusLib;
+    using HamBusLib.UdpNetwork;
+    using System;
+    using System.IO.Ports;
+    using System.Text;
+    using System.Threading;
+
     public class KenwoodEmu
     {
-        private SerialPort _serialPort;
-        UdpServer udpServer = UdpServer.GetInstance();
+        private SerialPort serialPort;
+
+        internal UdpServer udpServer = UdpServer.GetInstance();
+
         public string Id
         {
             get
@@ -25,65 +24,96 @@ namespace KenwoodEmulator
                 state.Id = value;
             }
         }
+
         public enum Mode
         {
+            /// <summary>
+            /// Defines the LSB
+            /// </summary>
             LSB = 1,
+            /// <summary>
+            /// Defines the USB
+            /// </summary>
             USB = 2,
+            /// <summary>
+            /// Defines the CW
+            /// </summary>
             CW = 3,
+            /// <summary>
+            /// Defines the FM
+            /// </summary>
             FM = 4,
+            /// <summary>
+            /// Defines the AM
+            /// </summary>
             AM = 5,
+            /// <summary>
+            /// Defines the FSK
+            /// </summary>
             FSK = 6,
+            /// <summary>
+            /// Defines the CWR
+            /// </summary>
             CWR = 7,
+            /// <summary>
+            /// Defines the Tune
+            /// </summary>
             Tune = 8,
+            /// <summary>
+            /// Defines the FSR
+            /// </summary>
             FSR = 9,
+            /// <summary>
+            /// Defines the ERROR
+            /// </summary>
             ERROR = 10
         }
 
         private RigOperatingState state = RigOperatingState.Instance;
+
         private void SendSerial(string str)
         {
-            _serialPort.Write(str);
+            serialPort.Write(str);
         }
-        bool _continue;
+
+        private bool continueReadingSerialPort;
+
         public KenwoodEmu()
         {
             state.DocType = "RigOperatingState";
+        }
+
+        public void ClosePort()
+        {
+            continueReadingSerialPort = false;
         }
         public void OpenPort(string portName)
         {
 
             StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
-            Thread readThread = new Thread(ReadSerialPort);
+            Thread readThread = new Thread(ReadSerialPortThread);
 
             // Create a new SerialPort object with default settings.
-            _serialPort = new SerialPort();
+            serialPort = new SerialPort();
 
             // Allow the user to set the appropriate properties.
-            _serialPort.PortName = "com20";
-            _serialPort.BaudRate = 57600;
-            _serialPort.Parity = Parity.None;
-            _serialPort.DataBits = 8;
-            _serialPort.StopBits = StopBits.One;
-            _serialPort.Handshake = Handshake.None;
+            serialPort.PortName = "com20";
+            serialPort.BaudRate = 57600;
+            serialPort.Parity = Parity.None;
+            serialPort.DataBits = 8;
+            serialPort.StopBits = StopBits.One;
+            serialPort.Handshake = Handshake.None;
 
 
             // Set the read/write timeouts
-            _serialPort.ReadTimeout = 5000;
-            _serialPort.WriteTimeout = 500;
+            serialPort.ReadTimeout = 5000;
+            serialPort.WriteTimeout = 500;
 
-            _serialPort.Open();
-            _continue = true;
+            serialPort.Open();
+            continueReadingSerialPort = true;
             readThread.Start();
-
-            while (_continue)
-            {
-                Thread.Sleep(10);
-            }
-
-            readThread.Join();
-            _serialPort.Close();
-
         }
+
         public void command(string cmd)
         {
             string subcmd = cmd.Substring(0, 2);
@@ -137,10 +167,12 @@ namespace KenwoodEmulator
             }
         }
 
+        #region parse commands
         private void SMCommand(string cmd)
         {
             SendSerial("SM00000;");
         }
+
         private void EXCommand(string cmd)
         {
             SendSerial("?;");
@@ -200,7 +232,7 @@ namespace KenwoodEmulator
                 iTx.ToString(), //p8
                 extStr); // p9
 
-            Console.WriteLine("IF: {0}", sendStr);
+            //Console.WriteLine("IF: {0}", sendStr);
             SendSerial(sendStr);
         }
 
@@ -216,6 +248,7 @@ namespace KenwoodEmulator
             }
             udpServer.SendBroadcast(state, 7300);
         }
+
         private void ModeCommand(string cmd)
         {
             if (cmd.Length == 3)
@@ -233,6 +266,7 @@ namespace KenwoodEmulator
             state.Mode = ((Mode)modeInt).ToString();
             udpServer.SendBroadcast(state, 7300);
         }
+
         private void FreqCommand(string cmd)
         {
             if (cmd.Length == 3)
@@ -250,6 +284,7 @@ namespace KenwoodEmulator
             state.Freq = freqInt;
             udpServer.SendBroadcast(state, 7300);
         }
+
         private void VFOCommand(string cmd)
         {
             if (cmd.Length == 3)
@@ -257,23 +292,17 @@ namespace KenwoodEmulator
                 SendSerial("FR0;");
                 return;
             }
-
-            //var semiLoc = cmd.IndexOf(';');
-            //var freqStr = cmd.Substring(2, semiLoc - 2);
-            //var freqInt = Convert.ToInt64(freqStr);
-            //state.Freq = freqInt;
-            //networkThreadRunner.SendBroadcast(state, 7300);
-            //Console.WriteLine("freq: {0}", freqInt);
         }
-        public void ReadSerialPort()
+        #endregion
+        public void ReadSerialPortThread()
         {
             StringBuilder sb = new StringBuilder();
-            while (_continue)
+            while (continueReadingSerialPort)
             {
                 try
                 {
                     //string message = _serialPort.ReadLine();
-                    int c = _serialPort.ReadChar();
+                    int c = serialPort.ReadChar();
                     if (c < 0)
                     {
                         Console.WriteLine("Serial port read error");
@@ -293,6 +322,7 @@ namespace KenwoodEmulator
                 }
                 catch (TimeoutException) { }
             }
+            serialPort.Close();
         }
 
         private Mode ModeStdToKenwoodEnum()

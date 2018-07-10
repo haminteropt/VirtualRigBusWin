@@ -1,23 +1,43 @@
-using Microsoft.Owin.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VirtualKenwoodBusWin
 {
-    class Program
+    using HamBusLib;
+    using HamBusLib.UdpNetwork;
+    using KenwoodEmulator;
+    using Microsoft.Owin.Hosting;
+    using System;
+    using System.Net.Http;
+
+    /// <summary>
+    /// Defines the <see cref="Program" />
+    /// </summary>
+    public class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// The Main
+        /// </summary>
+        /// <param name="args">The args<see cref="string[]"/></param>
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            string uri = "http://localhost:8989";
-            using (WebApp.Start<Startup>(uri))
-            {
-                Console.WriteLine($" Server started at {uri} on {DateTime.UtcNow:F}");
-            }
-                Console.ReadKey();
+
+            int httpPort = IpPorts.TcpPort;
+            var url = string.Format("http://localhost:{0}", httpPort);
+
+            var comPort = "com20";
+            var udpServer = UdpServer.GetInstance();
+            var reportingThread = ReportingThread.GetInstance();
+            reportingThread.rigBusDesc.ComPort = comPort;
+            reportingThread.StartInfoThread();
+            var kenwood = new KenwoodEmu();
+            kenwood.Id = reportingThread.Id;
+
+            kenwood.OpenPort(comPort);
+
+            var kenwood2 = new KenwoodEmu();
+            WebApp.Start<Startup>(url: url);
+
+            // Create HttpCient and make a request to api/values 
+            Console.ReadLine();
         }
+
     }
 }
