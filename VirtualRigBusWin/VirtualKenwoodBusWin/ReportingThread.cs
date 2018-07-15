@@ -1,4 +1,5 @@
 ﻿using HamBusLib;
+using HamBusLib.Models;
 using HamBusLib.UdpNetwork;
 using Newtonsoft.Json;
 using System;
@@ -60,12 +61,25 @@ namespace VirtualKenwoodBusWin
         }
         public void SendRigBusInfo()
         {
+            var ServerEp = new IPEndPoint(IPAddress.Any, 0);
+            DirGreetingList dirList = DirGreetingList.Instance;
+            udpClient.EnableBroadcast = true;
+            var dirClient = DirectoryClient.Instance;
             while (true)
             {
                 rigBusDesc.Time = DateTimeUtils.ConvertToUnixTime(DateTime.Now);
-                udpClient.Connect("255.255.255.255", Constants.DirPortUdp);
                 Byte[] senddata = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(rigBusDesc));
-                udpClient.Send(senddata, senddata.Length);
+
+
+                udpClient.Send(senddata, senddata.Length, new IPEndPoint(IPAddress.Broadcast, 7300));
+                Console.WriteLine("Sending Data");
+                var ServerResponseData = udpClient.Receive(ref ServerEp);
+                var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
+                Console.WriteLine("Recived {0} from {1} port {2}", ServerResponse,
+                    ServerEp.Address.ToString(), ServerEp.Port);
+                var dirService = DirectoryBusGreeting.ParseCommand(ServerResponse);
+                DirGreetingList.Instance.Add(dirService);
+                dirClient.StartThread();
                 Thread.Sleep(3000);
             }
         }
