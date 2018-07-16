@@ -1,6 +1,7 @@
 ﻿namespace KenwoodEmulator
 {
     using HamBusLib;
+    using HamBusLib.Packets;
     using HamBusLib.UdpNetwork;
     using System;
     using System.IO.Ports;
@@ -80,7 +81,7 @@
 
         public KenwoodEmu()
         {
-            state.DocType = "RigOperatingState";
+            state.DocType = DocTypes.RigOperatingState;
         }
 
         public void ClosePort()

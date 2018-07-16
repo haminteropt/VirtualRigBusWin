@@ -1,5 +1,6 @@
 ﻿using HamBusLib;
 using HamBusLib.Models;
+using HamBusLib.Packets;
 using HamBusLib.UdpNetwork;
 using Newtonsoft.Json;
 using System;
@@ -54,7 +55,7 @@ namespace VirtualKenwoodBusWin
             rigBusDesc.SendSyncInfo = true;
             rigBusDesc.RigType = "Virtual";
             rigBusDesc.Name = "VirtualRig";
-            rigBusDesc.DocType = "RigBus";
+            rigBusDesc.DocType = DocTypes.RigBusInfo; ;
 
             infoThread = new Thread(SendRigBusInfo);
             infoThread.Start();
