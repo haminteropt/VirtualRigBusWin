@@ -81,7 +81,7 @@
 
         public KenwoodEmu()
         {
-            state.DocType = DocTypes.RigOperatingState;
+            state.DocType = DocTypes.OperatingState;
         }
 
         public void ClosePort()
