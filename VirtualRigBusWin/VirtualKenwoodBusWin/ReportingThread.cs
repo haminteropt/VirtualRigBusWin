@@ -59,13 +59,16 @@ namespace VirtualKenwoodBusWin
 
             infoThread = new Thread(SendRigBusInfo);
             infoThread.Start();
+
+            var dirClient = DirectoryClient.Instance;
+            dirClient.StartThread();
         }
         public void SendRigBusInfo()
         {
             var ServerEp = new IPEndPoint(IPAddress.Any, 0);
             DirGreetingList dirList = DirGreetingList.Instance;
             udpClient.EnableBroadcast = true;
-            var dirClient = DirectoryClient.Instance;
+
             while (true)
             {
                 rigBusDesc.Time = DateTimeUtils.ConvertToUnixTime(DateTime.Now);
@@ -80,8 +83,8 @@ namespace VirtualKenwoodBusWin
                     ServerEp.Address.ToString(), ServerEp.Port);
                 var dirService = DirectoryBusGreeting.ParseCommand(ServerResponse);
                 DirGreetingList.Instance.Add(dirService);
-                dirClient.StartThread();
-                Thread.Sleep(3000);
+
+                Thread.Sleep(HamBusEnv.SleepTimeMs);
             }
         }
     }
