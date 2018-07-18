@@ -76,11 +76,9 @@ namespace VirtualKenwoodBusWin
 
 
                 udpClient.Send(senddata, senddata.Length, new IPEndPoint(IPAddress.Broadcast, 7300));
-                Console.WriteLine("Sending Data");
                 var ServerResponseData = udpClient.Receive(ref ServerEp);
                 var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
-                Console.WriteLine("Recived {0} from {1} port {2}", ServerResponse,
-                    ServerEp.Address.ToString(), ServerEp.Port);
+
                 var dirService = DirectoryBusGreeting.ParseCommand(ServerResponse);
                 DirGreetingList.Instance.Add(dirService);
 

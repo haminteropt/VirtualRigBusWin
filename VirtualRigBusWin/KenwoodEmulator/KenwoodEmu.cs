@@ -233,7 +233,6 @@
                 iTx.ToString(), //p8
                 extStr); // p9
 
-            //Console.WriteLine("IF: {0}", sendStr);
             SendSerial(sendStr);
         }
 
