@@ -302,22 +302,28 @@
                 try
                 {
                     //string message = _serialPort.ReadLine();
-                    int c = serialPort.ReadChar();
-                    if (c < 0)
+                    try
                     {
-                        Console.WriteLine("Serial port read error");
-                        return;
-                    }
-                    char ch = Convert.ToChar(c);
-                    if (ch == ';')
+                        int c = serialPort.ReadChar();
+                        if (c < 0)
+                        {
+                            Console.WriteLine("Serial port read error");
+                            return;
+                        }
+                        char ch = Convert.ToChar(c);
+                        if (ch == ';')
+                        {
+                            sb.Append(ch);
+                            command(sb.ToString());
+                            sb.Clear();
+                        }
+                        else
+                        {
+                            sb.Append(ch);
+                        }
+                    } catch(Exception e)
                     {
-                        sb.Append(ch);
-                        command(sb.ToString());
-                        sb.Clear();
-                    }
-                    else
-                    {
-                        sb.Append(ch);
+                        Console.WriteLine("Serial Read Error: {0}", e.Message);
                     }
                 }
                 catch (TimeoutException) { }

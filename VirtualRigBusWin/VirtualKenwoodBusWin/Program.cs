@@ -21,7 +21,7 @@ namespace VirtualKenwoodBusWin
 
             int httpPort = IpPorts.TcpPort;
             //var url = string.Format("http://+:{0}/", httpPort);
-            var url = string.Format("http://*:{0}", httpPort);
+            var url = string.Format("http://+:{0}", httpPort);
             var comPort = "com20";
             var udpServer = UdpServer.GetInstance();
             var reportingThread = ReportingThread.GetInstance();
