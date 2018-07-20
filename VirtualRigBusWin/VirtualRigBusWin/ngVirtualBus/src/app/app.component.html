@@ -3,7 +3,24 @@
   <mat-card class="heading">
     <h1>Virtual Radio RigBus Services ARIF!</h1>
   </mat-card>
+  <div class="sidebar">
 
+  </div>
+  <div class="right">
+    <div *ngFor="let packet of serviceList.rigBuses">
+      <div class="">
+        <a href="http://{{packet.host}}:{{packet.tcpPort}}" target="_blank">{{packet.name}}</a>
+      </div>
+    </div>
+
+    <div *ngFor="let packet of serviceList.dataBuses">
+
+      <div class="">
+        <a href="http://{{packet.host}}:{{packet.tcpPort}}" target="_blank">{{packet.name}}</a>
+      </div>
+
+    </div>
+  </div>
   <div class="content">
     <router-outlet></router-outlet>
   </div>

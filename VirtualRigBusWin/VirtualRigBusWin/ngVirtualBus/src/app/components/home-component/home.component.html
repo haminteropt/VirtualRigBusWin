@@ -5,9 +5,19 @@
   <div class="box ">Port</div>
 </div>
 
-<div *ngFor="let packet of serviceList">
+<div *ngFor="let packet of serviceList.rigBuses">
   <div class="wrapper content">
-    <div class="box"><a href="http://{{packet.host}}:{{packet.tcpPort}}" target="_blank">{{packet.name}}</a> </div>
+    <div class="box"><a href="http://{{packet.host}}:{{packet.tcpPort}}"   
+      target="_blank">{{packet.name}}</a> </div>
+    <div class="box"> {{packet.description}} </div>
+    <div class="box"> {{packet.docType}} </div>
+    <div class="box"> {{packet.comPort}}</div>
+  </div>
+</div>
+<div *ngFor="let packet of serviceList.dataBuses">
+  <div class="wrapper content">
+    <div class="box"><a href="http://{{packet.host}}:{{packet.tcpPort}}"   
+      target="_blank">{{packet.name}}</a> </div>
     <div class="box"> {{packet.description}} </div>
     <div class="box"> {{packet.docType}} </div>
     <div class="box"> {{packet.comPort}}</div>
