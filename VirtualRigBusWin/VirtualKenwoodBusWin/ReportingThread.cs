@@ -68,21 +68,28 @@ namespace VirtualKenwoodBusWin
             var ServerEp = new IPEndPoint(IPAddress.Any, 0);
             DirGreetingList dirList = DirGreetingList.Instance;
             udpClient.EnableBroadcast = true;
+            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 3000);
 
             while (true)
             {
-                rigBusDesc.Time = DateTimeUtils.ConvertToUnixTime(DateTime.Now);
-                Byte[] senddata = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(rigBusDesc));
+                try
+                {
+                    rigBusDesc.Time = DateTimeUtils.ConvertToUnixTime(DateTime.Now);
+                    Byte[] senddata = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(rigBusDesc));
 
 
-                udpClient.Send(senddata, senddata.Length, new IPEndPoint(IPAddress.Broadcast, 7300));
-                var ServerResponseData = udpClient.Receive(ref ServerEp);
-                var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
+                    udpClient.Send(senddata, senddata.Length, new IPEndPoint(IPAddress.Broadcast, 7300));
+                    var ServerResponseData = udpClient.Receive(ref ServerEp);
+                    var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
 
-                var dirService = DirectoryBusGreeting.ParseCommand(ServerResponse);
-                DirGreetingList.Instance.Add(dirService);
+                    var dirService = DirectoryBusGreeting.ParseCommand(ServerResponse);
+                    DirGreetingList.Instance.Add(dirService);
 
-                Thread.Sleep(HamBusEnv.SleepTimeMs);
+                    Thread.Sleep(HamBusEnv.SleepTimeMs);
+                } catch (Exception e)
+                {
+                    Console.WriteLine("Exception: {0}", e.Message);
+                }
             }
         }
     }
