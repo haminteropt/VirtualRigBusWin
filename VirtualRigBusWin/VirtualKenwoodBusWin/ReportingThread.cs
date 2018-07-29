@@ -30,10 +30,7 @@ namespace VirtualKenwoodBusWin
 
             return Instance;
         }
-        private ReportingThread()
-        {
-
-        }
+        private ReportingThread() { }
 
         public void StartInfoThread()
         {

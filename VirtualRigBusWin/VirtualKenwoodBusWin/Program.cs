@@ -1,11 +1,14 @@
 namespace VirtualKenwoodBusWin
 {
     using HamBusLib;
+    using HamBusLib.Models.Configuration;
     using HamBusLib.UdpNetwork;
     using KenwoodEmulator;
     using Microsoft.Owin.Hosting;
     using System;
+    using System.IO.Ports;
     using System.Net.Http;
+    using System.Threading;
 
     /// <summary>
     /// Defines the <see cref="Program" />
@@ -20,24 +23,36 @@ namespace VirtualKenwoodBusWin
         {
 
             int httpPort = IpPorts.TcpPort;
-            //var url = string.Format("http://+:{0}/", httpPort);
+
+
             var url = string.Format("http://+:{0}", httpPort);
-            var comPort = "com20";
+
             var udpServer = UdpServer.GetInstance();
             var reportingThread = ReportingThread.GetInstance();
-            reportingThread.rigBusDesc.ComPort = comPort;
             reportingThread.StartInfoThread();
-            var kenwood = new KenwoodEmu();
-            kenwood.Id = reportingThread.Id;
+            StartVirtualRigs();
 
-            kenwood.OpenPort(comPort);
-
-            var kenwood2 = new KenwoodEmu();
             WebApp.Start<Startup>(url: url);
-
-            // Create HttpCient and make a request to api/values 
             Console.ReadLine();
         }
 
+        private static void StartVirtualRigs()
+        {
+            var virtRigIngfo = VirtualRigInfo.Instance.GetVirtualRigConfig("comm20");
+            foreach (var port in virtRigIngfo.CommPorts)
+            {
+                var kenwoodVRThread = new Thread(()=>StartKenwoodVR(port));
+                kenwoodVRThread.Start();
+            }
+        }
+
+        private static void StartKenwoodVR(CommPortConf commPortConf)
+        {
+            var kenwood = new KenwoodEmu();
+            kenwood.ThreadId = Thread.CurrentThread.ManagedThreadId;
+            Console.WriteLine("Starting Virtual Rig on Port: {1}: {0}",
+                commPortConf.PortName, commPortConf.DisplayName);
+            kenwood.OpenPort(commPortConf);
+        }
     }
 }

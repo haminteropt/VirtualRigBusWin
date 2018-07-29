@@ -1,6 +1,7 @@
 ﻿namespace KenwoodEmulator
 {
     using HamBusLib;
+    using HamBusLib.Models.Configuration;
     using HamBusLib.Packets;
     using HamBusLib.UdpNetwork;
     using System;
@@ -13,18 +14,18 @@
         private SerialPort serialPort;
 
         internal UdpServer udpServer = UdpServer.GetInstance();
-
-        public string Id
-        {
-            get
-            {
-                return state.Id;
-            }
-            set
-            {
-                state.Id = value;
-            }
-        }
+        public int ThreadId;
+        //public string Id
+        //{
+        //    get
+        //    {
+        //        return state.Id;
+        //    }
+        //    set
+        //    {
+        //        state.Id = value;
+        //    }
+        //}
 
         public enum Mode
         {
@@ -82,13 +83,16 @@
         public KenwoodEmu()
         {
             state.DocType = DocTypes.OperatingState;
+            state.Freq = 14250000;
+            state.FreqA = 14250000;
+            state.Mode = "usb";
         }
 
         public void ClosePort()
         {
             continueReadingSerialPort = false;
         }
-        public void OpenPort(string portName)
+        public void OpenPort(CommPortConf port)
         {
 
             StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
@@ -98,17 +102,17 @@
             serialPort = new SerialPort();
 
             // Allow the user to set the appropriate properties.
-            serialPort.PortName = "com20";
-            serialPort.BaudRate = 57600;
-            serialPort.Parity = Parity.None;
+            serialPort.PortName = port.PortName;
+            serialPort.BaudRate = port.BaudRate;
+            serialPort.Parity = ToParity(port.Parity);
             serialPort.DataBits = 8;
-            serialPort.StopBits = StopBits.One;
-            serialPort.Handshake = Handshake.None;
+            serialPort.StopBits = ToStop(port.StopBits);
+            serialPort.Handshake = ToHandShake(port.Handshake);
 
 
             // Set the read/write timeouts
-            serialPort.ReadTimeout = 5000;
-            serialPort.WriteTimeout = 500;
+            serialPort.ReadTimeout = port.ReadTimeout;
+            serialPort.WriteTimeout = port.WriteTimeout;
 
             serialPort.Open();
             continueReadingSerialPort = true;
@@ -321,7 +325,8 @@
                         {
                             sb.Append(ch);
                         }
-                    } catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
                         Console.WriteLine("Serial Read Error: {0}", e.Message);
                     }
@@ -363,6 +368,56 @@
                     return Mode.Tune;
             }
             return Mode.ERROR;
+        }
+        private Parity ToParity(string parity)
+        {
+            switch (parity.ToLower())
+            {
+                case "none":
+                    return Parity.None;
+                case "odd":
+                    return Parity.Odd;
+                case "even":
+                    return Parity.Even;
+                case "mark":
+                    return Parity.Mark;
+                case "space":
+                    return Parity.Space;
+            }
+
+            return Parity.None;
+        }
+        private StopBits ToStop(string stop)
+        {
+            switch (stop.ToLower())
+            {
+                case "none":
+                    return StopBits.None;
+                case "one":
+                    return StopBits.One;
+                case "onepointfive":
+                    return StopBits.OnePointFive;
+                case "two":
+                    return StopBits.Two;
+                default:
+                    return StopBits.None;
+            }
+        }
+        private Handshake ToHandShake(string hand)
+        {
+            switch (hand.ToLower())
+            {
+                case "none":
+                    return Handshake.None;
+                case "xonxoff":
+                    return Handshake.XOnXOff;
+                case "requesttosend":
+                    return Handshake.RequestToSend;
+                case "requesttosendxonxoff":
+                    return Handshake.RequestToSendXOnXOff;
+                default:
+                    return Handshake.None;
+            }
         }
     }
 }

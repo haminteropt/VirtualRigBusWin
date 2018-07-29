@@ -94,6 +94,11 @@
     <Compile Include="Controller\SerialController.cs" />
     <Compile Include="Controller\ValueController.cs" />
     <Compile Include="PortConfig.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ReportingThread.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Program.cs" />
@@ -103,6 +108,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KenwoodEmulator\KenwoodEmulator.csproj">

@@ -1,6 +1,8 @@
 ﻿using HamBusLib;
+using HamBusLib.Models.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +11,6 @@ namespace VirtualKenwoodBusWin
 {
     public class VirtualRigInfo : RigBusInfo
     {
-
-
         private static VirtualRigInfo instance = null;
         public static VirtualRigInfo Instance
         {
@@ -22,6 +22,25 @@ namespace VirtualKenwoodBusWin
                 }
                 return instance;
             }
+        }
+        public VirtualBusConf GetVirtualRigConfig(string commPort)
+        {
+            var virtBusConf = new VirtualBusConf();
+            var commPortConf = new CommPortConf();
+
+            // todo replace with call to db
+            commPortConf.BaudRate = 57600;
+            commPortConf.PortName = "com20";
+            commPortConf.Parity = Parity.None.ToString();
+            commPortConf.DataBits = 8;
+            commPortConf.Handshake = "none";
+            commPortConf.StopBits = StopBits.One.ToString();
+            commPortConf.ReadTimeout = 5000;
+            commPortConf.WriteTimeout = 500;
+            virtBusConf.CommPorts.Add(commPortConf);
+
+            return virtBusConf;
+
         }
     }
 }
