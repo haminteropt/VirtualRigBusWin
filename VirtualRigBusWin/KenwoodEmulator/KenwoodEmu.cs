@@ -79,6 +79,7 @@
         }
 
         private bool continueReadingSerialPort;
+        private CommPortConf portConf;
 
         public KenwoodEmu()
         {
@@ -94,7 +95,7 @@
         }
         public void OpenPort(CommPortConf port)
         {
-
+            portConf = port;
             StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
             Thread readThread = new Thread(ReadSerialPortThread);
 
@@ -255,20 +256,24 @@
 
         private void ModeCommand(string cmd)
         {
-            if (cmd.Length == 3)
+            try
             {
+                if (cmd.Length == 3)
+                {
 
-                int mode = Convert.ToInt32(ModeStdToKenwoodEnum());
-                var modeFmt = string.Format("MD{0};", mode.ToString());
-                SendSerial(modeFmt);
+                    int mode = Convert.ToInt32(ModeStdToKenwoodEnum());
+                    var modeFmt = string.Format("MD{0};", mode.ToString());
+                    SendSerial(modeFmt);
 
-                return;
-            }
-            var semiLoc = cmd.IndexOf(';');
-            var modeEnumStr = cmd.Substring(2, semiLoc - 2);
-            var modeInt = Convert.ToInt32(modeEnumStr);
-            state.Mode = ((Mode)modeInt).ToString();
-            udpServer.SendBroadcast(state, 7300);
+                    return;
+                }
+                var semiLoc = cmd.IndexOf(';');
+                var modeEnumStr = cmd.Substring(2, semiLoc - 2);
+                var modeInt = Convert.ToInt32(modeEnumStr);
+                state.Mode = ((Mode)modeInt).ToString();
+                udpServer.SendBroadcast(state, 7300);
+            } catch(FormatException)
+            { }
         }
 
         private void FreqCommand(string cmd)
@@ -284,9 +289,13 @@
 
             var semiLoc = cmd.IndexOf(';');
             var freqStr = cmd.Substring(2, semiLoc - 2);
-            var freqInt = Convert.ToInt64(freqStr);
-            state.Freq = freqInt;
-            udpServer.SendBroadcast(state, 7300);
+            try
+            {
+                var freqInt = Convert.ToInt64(freqStr);
+                state.Freq = freqInt;
+                udpServer.SendBroadcast(state, 7300);
+            }
+            catch (Exception ) { }
         }
 
         private void VFOCommand(string cmd)
@@ -311,7 +320,7 @@
                         int c = serialPort.ReadChar();
                         if (c < 0)
                         {
-                            Console.WriteLine("Serial port read error");
+                            Console.WriteLine("Serial port {0} read error", portConf.PortName);
                             return;
                         }
                         char ch = Convert.ToChar(c);
@@ -326,12 +335,18 @@
                             sb.Append(ch);
                         }
                     }
+                    catch (TimeoutException )
+                    {
+                        Console.WriteLine("Timeout Exception:  Maybe {0} isn't running.",portConf.DisplayName);
+                    }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Serial Read Error: {0}", e.Message);
+                        Console.WriteLine("Serial Read Error: {0} port {1} Display Name: {2}", 
+                            e.ToString(), portConf.PortName, portConf.DisplayName);
                     }
                 }
                 catch (TimeoutException) { }
+                catch (FormatException)  { }
             }
             serialPort.Close();
         }

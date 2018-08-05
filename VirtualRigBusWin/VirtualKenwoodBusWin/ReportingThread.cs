@@ -83,9 +83,14 @@ namespace VirtualKenwoodBusWin
                     DirGreetingList.Instance.Add(dirService);
 
                     Thread.Sleep(HamBusEnv.SleepTimeMs);
-                } catch (Exception e)
+                }
+                catch (SocketException)
                 {
-                    Console.WriteLine("Exception: {0}", e.Message);
+                    Console.WriteLine("Timeout: Maybe DirectoryBus isn't running! ");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Timeout: Maybe DirectoryBus isn't running! \nExceptions: {0}", e.ToString());
                 }
             }
         }
