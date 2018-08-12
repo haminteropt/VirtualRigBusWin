@@ -38,7 +38,7 @@ namespace VirtualKenwoodBusWin
 
         private static void StartVirtualRigs()
         {
-            var virtRigIngfo = VirtualRigInfo.Instance.GetVirtualRigConfig("comm20");
+            var virtRigIngfo = VirtualRigInfo.Instance.GetVirtualRigConfig();
             foreach (var port in virtRigIngfo.CommPorts)
             {
                 var kenwoodVRThread = new Thread(()=>StartKenwoodVR(port));

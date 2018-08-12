@@ -24,50 +24,58 @@ namespace VirtualKenwoodBusWin
                 return instance;
             }
         }
-        public VirtualBusConf GetVirtualRigConfig(string commPort)
+        public VirtualBusConf GetVirtualRigConfig()
         {
-            var virtBusConf = new VirtualBusConf();
-            virtBusConf.Host = Dns.GetHostName();
-            var commPortConf = new CommPortConf();
+            var virtBusConf = new VirtualBusConf
+            {
+                Host = Dns.GetHostName()
+            };
+            var commPortConf = new CommPortConf
+            {
 
-            // todo replace with call to db
-            commPortConf.DisplayName = "N3FJP Logger";
-            commPortConf.BaudRate = 57600;
-            commPortConf.PortName = "com20";
-            commPortConf.Parity = Parity.None.ToString();
-            commPortConf.DataBits = 8;
-            commPortConf.Handshake = "none";
-            commPortConf.StopBits = StopBits.One.ToString();
-            commPortConf.ReadTimeout = 5000;
-            commPortConf.WriteTimeout = 500;
+                // todo replace with call to db
+                DisplayName = "N3FJP Logger",
+                BaudRate = 57600,
+                PortName = "com20",
+                Parity = Parity.None.ToString(),
+                DataBits = 8,
+                Handshake = "none",
+                StopBits = StopBits.One.ToString(),
+                ReadTimeout = 5000,
+                WriteTimeout = 500
+            };
             virtBusConf.CommPorts.Add(commPortConf);
 
-            commPortConf = new CommPortConf();
+            commPortConf = new CommPortConf
+            {
 
-            // todo replace with call to db
-            commPortConf.DisplayName = "ACLog Logger";
-            commPortConf.BaudRate = 57600;
-            commPortConf.PortName = "com19";
-            commPortConf.Parity = Parity.None.ToString();
-            commPortConf.DataBits = 8;
-            commPortConf.Handshake = "none";
-            commPortConf.StopBits = StopBits.One.ToString();
-            commPortConf.ReadTimeout = 5000;
-            commPortConf.WriteTimeout = 500;
+                // todo replace with call to db
+                DisplayName = "ACLog Logger",
+                BaudRate = 57600,
+                PortName = "com19",
+                Parity = Parity.None.ToString(),
+                DataBits = 8,
+                Handshake = "none",
+                StopBits = StopBits.One.ToString(),
+                ReadTimeout = 5000,
+                WriteTimeout = 500
+            };
             virtBusConf.CommPorts.Add(commPortConf);
 
-            commPortConf = new CommPortConf();
+            commPortConf = new CommPortConf
+            {
 
-            // todo replace with call to db
-            commPortConf.DisplayName = "xyz Logger";
-            commPortConf.BaudRate = 57600;
-            commPortConf.PortName = "com18";
-            commPortConf.Parity = Parity.None.ToString();
-            commPortConf.DataBits = 8;
-            commPortConf.Handshake = "none";
-            commPortConf.StopBits = StopBits.One.ToString();
-            commPortConf.ReadTimeout = 5000;
-            commPortConf.WriteTimeout = 500;
+                // todo replace with call to db
+                DisplayName = "xyz Logger",
+                BaudRate = 57600,
+                PortName = "com18",
+                Parity = Parity.None.ToString(),
+                DataBits = 8,
+                Handshake = "none",
+                StopBits = StopBits.One.ToString(),
+                ReadTimeout = 5000,
+                WriteTimeout = 500
+            };
             virtBusConf.CommPorts.Add(commPortConf);
 
             return virtBusConf;

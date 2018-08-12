@@ -120,7 +120,7 @@
             readThread.Start();
         }
 
-        public void command(string cmd)
+        public void Command(string cmd)
         {
             string subcmd = cmd.Substring(0, 2);
             switch (subcmd)
@@ -327,7 +327,7 @@
                         if (ch == ';')
                         {
                             sb.Append(ch);
-                            command(sb.ToString());
+                            Command(sb.ToString());
                             sb.Clear();
                         }
                         else
@@ -337,7 +337,7 @@
                     }
                     catch (TimeoutException )
                     {
-                        Console.WriteLine("Timeout Exception:  Maybe {0} isn't running.",portConf.DisplayName);
+                        //Console.WriteLine("Timeout Exception:  Maybe {0} isn't running.",portConf.DisplayName);
                     }
                     catch (Exception e)
                     {
