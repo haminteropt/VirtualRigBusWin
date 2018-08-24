@@ -36,8 +36,6 @@ export class DirService {
     const reqHeader = new HttpHeaders().
       set('Content-Type', 'application/json');
 
-
-
     if (content) {
       const contentJson: string = JSON.stringify(content);
       switch (method.toLowerCase()) {

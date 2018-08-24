@@ -10,6 +10,7 @@ import { MaterialModule } from './material.module';
 import { PageNotFoundComponent } from './components/page-not-found-component/page-not-found.component';
 import { HomeComponent } from './components/home-component/home.component';
 import { DirService } from './services/DirService.service';
+import { ConfigService } from './services/config-service.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,9 @@ import { DirService } from './services/DirService.service';
     MaterialModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [DirService, HttpClient],
+  providers: [DirService,
+    ConfigService,
+    HttpClient],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

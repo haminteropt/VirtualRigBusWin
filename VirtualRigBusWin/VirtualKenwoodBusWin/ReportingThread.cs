@@ -50,8 +50,8 @@ namespace VirtualKenwoodBusWin
             rigBusDesc.Description = "Kenwood Virtual RigBus";
             rigBusDesc.Ip = myIP;
             rigBusDesc.SendSyncInfo = true;
-            rigBusDesc.RigType = "Virtual";
-            rigBusDesc.Name = "VirtualRig";
+            rigBusDesc.RigType = Constants.VirtualRigType;
+            rigBusDesc.Name = Constants.VirtualRigName;
             rigBusDesc.DocType = DocTypes.RigBusInfo; ;
 
             infoThread = new Thread(SendRigBusInfo);
